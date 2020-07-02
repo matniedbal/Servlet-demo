@@ -1,0 +1,4 @@
+/src/main/resources/hibernate.cfg.xml
+/.idea/
+/target/
+/src/webapp/jsp/WEB-INF/
