@@ -25,18 +25,18 @@ public class AddProductController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String errorMessage = validateRequest(req);
-        if(errorMessage != null){
-            req.setAttribute("error", errorMessage);
-            req.getRequestDispatcher("add-product.jsp").forward(req,resp);
-            return;
-        }
         String name = req.getParameter("name");
         String category = req.getParameter("category");
         String description = req.getParameter("description");
         String price = req.getParameter("price");
         String quantity = req.getParameter("quantity");
-
+        System.out.println("name: "+name+"; cat: "+category+"; desc: "+ description+"; price:"+price+"; quantity:"+quantity);
+        String errorMessage = validateRequest(name,price,description,category,quantity);
+        if(errorMessage != null){
+            req.setAttribute("error", errorMessage);
+            req.getRequestDispatcher("add-product.jsp").forward(req,resp);
+            return;
+        }
         Product product = Product.builder()
                 .name(name)
                 .category(Category.valueOf(category))

@@ -3,7 +3,6 @@ package eu.mrndesign.matned.servletDemo.shop.repository;
 import eu.mrndesign.matned.servletDemo.shop.repository.model.ProductDao;
 import eu.mrndesign.matned.servletDemo.shop.repository.model.entity.Product;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -22,14 +21,21 @@ public class ProductRepository {
     @Getter
     private List<Product> products;
     private ProductDao dao;
+    private boolean justAddedNeItemFlag;
 
     private ProductRepository() {
         products = new ArrayList<>();
+        justAddedNeItemFlag = false;
     }
 
     public void save(Product product) {
+        if(dao == null) {
+            dao = new ProductDao();
+            justAddedNeItemFlag = true;
+        }
         product.setId(products.size() + 1);
         products.add(product);
+        dao.add(product);
     }
 
     public List<Product> search(String item , String searchedBy){
@@ -41,12 +47,14 @@ public class ProductRepository {
     }
 
     public List<Product> initiateListFromDB_Page(){
+        justAddedNeItemFlag = false;
         dao = new ProductDao();
         products = dao.findAll();
         return products;
     }
 
     public List<Product> findAll() {
+        if(justAddedNeItemFlag) return initiateListFromDB_Page();
         return products;
     }
 
@@ -62,6 +70,7 @@ public class ProductRepository {
                 .filter(p -> p.getId().equals(id))
                 .findAny();
         product.ifPresent(products::remove);
+        product.ifPresent(value -> dao.remove(value));
     }
 
     public void sortBy(String sortBy) {
@@ -95,13 +104,7 @@ public class ProductRepository {
     }
 
     public void setProduct(Product productToEdit) {
-        int prodId = productToEdit.getId();
-        products.get(prodId).setName(productToEdit.getName());
-        products.get(prodId).setDescription(productToEdit.getDescription());
-        products.get(prodId).setCategory(productToEdit.getCategory());
-        products.get(prodId).setPrice(productToEdit.getPrice());
-        products.get(prodId).setQuantity(productToEdit.getQuantity());
-        dao.update(products.get(prodId));
+        dao.update(productToEdit);
     }
 
 

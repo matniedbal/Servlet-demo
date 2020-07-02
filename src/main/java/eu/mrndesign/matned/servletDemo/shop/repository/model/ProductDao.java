@@ -1,7 +1,6 @@
 package eu.mrndesign.matned.servletDemo.shop.repository.model;
 
 import eu.mrndesign.matned.servletDemo.shop.repository.hibernate.HibernateUtil;
-import eu.mrndesign.matned.servletDemo.shop.repository.model.entity.Category;
 import eu.mrndesign.matned.servletDemo.shop.repository.model.entity.Product;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -72,6 +71,7 @@ public class ProductDao implements DaoInterface<Product> {
         }
     }
 
+    @Override
     public void update(Product product) {
         SessionFactory factory = HibernateUtil.getSessionFactory();
         try (Session session = factory.openSession()) {
@@ -83,6 +83,21 @@ public class ProductDao implements DaoInterface<Product> {
             stackTrace = e.getMessage();
         }
     }
+
+    @Override
+    public void remove(Product product) {
+        SessionFactory factory = HibernateUtil.getSessionFactory();
+        try (Session session = factory.openSession()) {
+            session.beginTransaction();
+            session.remove(product);
+            session.getTransaction().commit();
+        } catch (HibernateException e) {
+            errorMessage = "Something went wrong in communication with Data Base";
+            stackTrace = e.getMessage();
+        }
+    }
+
+
 
     public void setSearchedBy(String searchedBy) {
         this.searchedBy = searchedBy;

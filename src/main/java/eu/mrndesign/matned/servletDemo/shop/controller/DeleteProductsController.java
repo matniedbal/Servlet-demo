@@ -18,16 +18,13 @@ public class DeleteProductsController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String id = req.getParameter("id");
-
-        int productId = 0;
-
-        try{
-            productId = Integer.parseInt(id);
-        } catch (NumberFormatException e){
-            System.out.println("Invalid product ID: " + productId);
+        String errorMessage;
+        try {
+            productService.deleteProduct(Integer.parseInt(id));
+        }catch (NumberFormatException e){
+            errorMessage = "Invalid id";
+        }finally {
+            resp.sendRedirect("/all-products");
         }
-
-        productService.deleteProduct(productId);
-        resp.sendRedirect("/all-products");
     }
 }

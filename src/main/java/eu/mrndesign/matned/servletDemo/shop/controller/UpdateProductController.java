@@ -28,7 +28,7 @@ public class UpdateProductController extends HttpServlet {
         String description = req.getParameter("description");
         String price = req.getParameter("price");
         String quantity = req.getParameter("quantity");
-        String errorMessage = validateRequest(req);
+        String errorMessage = validateRequest(name,price,description,category,quantity);
         if(errorMessage != null){
             req.setAttribute("error", errorMessage);
             req.setAttribute("id", id);
@@ -41,7 +41,6 @@ public class UpdateProductController extends HttpServlet {
             return;
         }
         Product p = productService.findById(Integer.parseInt(id));
-
         p.setName(name);
         p.setCategory(Category.valueOf(category));
         p.setDescription(description);

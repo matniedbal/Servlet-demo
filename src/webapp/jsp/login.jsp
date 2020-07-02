@@ -19,16 +19,16 @@
     <ul class="navbar-nav">
         <c:if test="${not empty user}">
             <li class="nav-item">
-                <a class="nav-link" href="/all-products">Produkty</a>
+                <a class="nav-link" href="/all-products">Products</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/add-product">Dodaj produkt</a>
+                <a class="nav-link" href="/add-product">Add product</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/users">Uzytkownicy</a>
+                <a class="nav-link" href="/users">Users</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/shopping-cart">Koszyk</a>
+                <a class="nav-link" href="/shopping-cart">Cart</a>
             </li>
         </c:if>
         <c:if test="${empty user}">
@@ -44,7 +44,6 @@
                 <a class="nav-link" href="/logout">Logout</a>
             </li>
         </c:if>
-
     </ul>
 </nav>
 
