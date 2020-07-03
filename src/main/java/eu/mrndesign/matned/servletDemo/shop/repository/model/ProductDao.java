@@ -1,15 +1,18 @@
 package eu.mrndesign.matned.servletDemo.shop.repository.model;
 
 import eu.mrndesign.matned.servletDemo.shop.repository.hibernate.HibernateUtil;
+import eu.mrndesign.matned.servletDemo.shop.repository.model.entity.Category;
 import eu.mrndesign.matned.servletDemo.shop.repository.model.entity.Product;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaBuilder.*;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ProductDao implements DaoInterface<Product> {
@@ -17,14 +20,20 @@ public class ProductDao implements DaoInterface<Product> {
     private static final String DEFAULT_SEARCH_METHOD_BY = "name";
     private static final String EMPTY_STRING_INITIALIZER = "";
     private static final String SORTING_DEFAULT_METHOD_BY = "id";
+    public static final int DEFAULT_MAX_RESULTS = 20;
+    public static final int DEFAULT_FIRST_RESULT = 0;
 
     private String searchedBy;
     private String search;
     private String sortBy;
+    private List<Category> categories;
+    private int minPrice;
+    private int maxPrice;
+    private int minQuantity;
+    private int maxQuantity;
     private boolean isDesc;
-    private String errorMessage;
-    private String stackTrace;
-
+    private int firstResult;
+    private int maxResults;
 
     public ProductDao() {
         initializeVariables();
@@ -32,28 +41,30 @@ public class ProductDao implements DaoInterface<Product> {
 
     @Override
     public List<Product> findAll() {
-        String searchedItem = "%" + search + "%";
-        System.out.println("Search item = "+ search+", search by: "+searchedBy);
         SessionFactory factory = HibernateUtil.getSessionFactory();
         List<Product> result = new ArrayList<>();
         try (Session session = factory.openSession()) {
             CriteriaBuilder cb = session.getCriteriaBuilder();
             CriteriaQuery<Product> cq = cb.createQuery(Product.class);
             Root<Product> rootTable = cq.from(Product.class);
-                cq.select(rootTable)
-                        .where(
-                                cb.like(cb.upper(rootTable.get(String.valueOf(searchedBy))), "%" + search.toUpperCase() + "%"));
-           cq.orderBy(isDesc ? cb.desc(rootTable.get(sortBy)) : cb.asc(rootTable.get(sortBy)));
-
+            In<Category> isIn = cb.in(rootTable.get("category"));
+            for (Category c : categories) {
+                isIn.value(c);
+            }
+            cq.select(rootTable)
+                    .where(cb.and(
+                                cb.like(cb.upper(rootTable.get(String.valueOf(searchedBy))), "%" + search.toUpperCase() + "%"),
+                                isIn,
+                                cb.between(rootTable.get("price"),minPrice,maxPrice),
+                                cb.between(rootTable.get("quantity"),minQuantity,maxQuantity)))
+                    .orderBy(isDesc ? cb.desc(rootTable.get(sortBy)) : cb.asc(rootTable.get(sortBy)));
             result.addAll(session
                     .createQuery(cq)
-//                    .setFirstResult(firstResultOnPage)     // TODO separate with pages
-//                    .setMaxResults(NUMBER_OF_RESULTS_PER_PAGE)
+                    .setFirstResult(firstResult)
+                    .setMaxResults(maxResults)
                     .list());
-            errorMessage = null;
         } catch (HibernateException e) {
-            errorMessage = "Something went wrong in communication with Data Base";
-            stackTrace = e.getMessage();
+            error("find all failed");
         }
         return result;
     }
@@ -66,8 +77,7 @@ public class ProductDao implements DaoInterface<Product> {
             session.save(product);
             session.getTransaction().commit();
         } catch (HibernateException e) {
-            errorMessage = "Something went wrong in communication with Data Base";
-            stackTrace = e.getMessage();
+            error("Add failed");
         }
     }
 
@@ -79,8 +89,7 @@ public class ProductDao implements DaoInterface<Product> {
             session.update(product);
             session.getTransaction().commit();
         } catch (HibernateException e) {
-            errorMessage = "Something went wrong in communication with Data Base";
-            stackTrace = e.getMessage();
+            error("Update failed");
         }
     }
 
@@ -92,12 +101,53 @@ public class ProductDao implements DaoInterface<Product> {
             session.remove(product);
             session.getTransaction().commit();
         } catch (HibernateException e) {
-            errorMessage = "Something went wrong in communication with Data Base";
-            stackTrace = e.getMessage();
+            error("Remove failed");
         }
     }
 
+    @Override
+    public void sort(String sortBy) {
+        if(this.sortBy.equals(sortBy)) isDesc = !isDesc;
+        else isDesc = false;
+        this.sortBy = sortBy;
+    }
 
+    @Override
+    public int getNumberOfRecords() {
+        SessionFactory factory = HibernateUtil.getSessionFactory();
+        int result = 0;
+        try (Session session = factory.openSession()) {
+            CriteriaBuilder cb = session.getCriteriaBuilder();
+            CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+            Root<Product> rootTable = cq.from(Product.class);
+            cq.select(cb.count(rootTable));
+            result = Math.toIntExact(session.createQuery(cq).getSingleResult());
+        }catch (HibernateException e){
+            error("Couldn't get records count");
+        }
+        return result;
+    }
+
+    @Override
+    public int getMax(String column) {
+        SessionFactory factory = HibernateUtil.getSessionFactory();
+        int result = 0;
+        try (Session session = factory.openSession()) {
+            CriteriaBuilder cb = session.getCriteriaBuilder();
+            CriteriaQuery<Integer> cq = cb.createQuery(Integer.class);
+            Root<Product> rootTable = cq.from(Product.class);
+            cq.select(cb.max(rootTable.get(column)));
+            result = session.createQuery(cq).getSingleResult();
+        }catch (HibernateException e){
+            error("Couldn't get the max "+column);
+        }
+        return result;
+    }
+
+    public void setPage(int page, int maxResults){
+        this.firstResult = page * maxResults;
+        this.maxResults = maxResults;
+    }
 
     public void setSearchedBy(String searchedBy) {
         this.searchedBy = searchedBy;
@@ -107,18 +157,39 @@ public class ProductDao implements DaoInterface<Product> {
         this.search = search;
     }
 
-    public void setSortBy(String sortBy) {
-        this.sortBy = sortBy;
+    public void setCategories(String category) {
+        try {
+            if (categories.contains(Category.valueOf(category))) {
+                categories = new ArrayList<>();
+                categories.add(Category.valueOf(category));
+            }
+        }catch (IllegalArgumentException e){
+            categories = Arrays.asList(Category.values());
+        }
     }
 
-    public void setDesc(boolean desc) {
-        isDesc = desc;
+    public void setNumberCriteria(int minPrice, int maxPrice, int minQuantity, int maxQuantity) {
+        this.minPrice = minPrice;
+        this.maxPrice = maxPrice;
+        this.minQuantity = minQuantity;
+        this.maxQuantity = maxQuantity;
+    }
+
+    private void error(String message) {
+        System.out.println("Error message: "+message);
     }
 
     private void initializeVariables() {
         searchedBy = DEFAULT_SEARCH_METHOD_BY;
         search = EMPTY_STRING_INITIALIZER;
         sortBy = SORTING_DEFAULT_METHOD_BY;
+        firstResult = DEFAULT_FIRST_RESULT;
+        maxResults = DEFAULT_MAX_RESULTS;
+        minPrice = 0;
+        maxPrice = getMax("price");
+        minQuantity = 0;
+        maxQuantity = getMax("quantity");
+        categories = Arrays.asList(Category.values());
         isDesc = false;
     }
 }

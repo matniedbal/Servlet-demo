@@ -30,7 +30,6 @@ public class AddProductController extends HttpServlet {
         String description = req.getParameter("description");
         String price = req.getParameter("price");
         String quantity = req.getParameter("quantity");
-        System.out.println("name: "+name+"; cat: "+category+"; desc: "+ description+"; price:"+price+"; quantity:"+quantity);
         String errorMessage = validateRequest(name,price,description,category,quantity);
         if(errorMessage != null){
             req.setAttribute("error", errorMessage);

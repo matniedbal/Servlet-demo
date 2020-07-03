@@ -18,39 +18,26 @@ public class ProductService {
     }
 
     private final ProductRepository repo;
-    private boolean isSearched;
-    private String sortedBy;
 
     private ProductService() {
-        sortedBy = "id";
         repo = ProductRepository.getInstance();
     }
 
     public void saveProduct(Product product){
         repo.save(product);
-        //sending email to admin that the product has been posted
     }
 
     public List<Product> findAll(){
-        if(repo.getProducts().isEmpty()) {
-            return repo.initiateListFromDB_Page();
-        }
-        else return repo.findAll();
+        return repo.findAll();
     }
 
 
-    public List<Product> search(String item, String searchBy){
-        return repo.search(item, searchBy);
+    public void search(String item, String searchBy){
+        repo.search(item, searchBy);
     }
-
 
     public void deleteProduct(Integer prodId) {
         repo.deleteProd(prodId);
-    }
-
-    public void sortProducts(String sortBy) {
-        sortedBy = sortBy;
-        repo.sortBy(sortedBy);
     }
 
     public Product findById(int id) {
@@ -61,7 +48,37 @@ public class ProductService {
         repo.setProduct(productToEdit);
     }
 
+    public void setPage(int page, int maxResults){
+        repo.setPage(page,maxResults);
+    }
 
+
+    public void clearProductList() {
+        repo.clearProductList();
+    }
+
+    public void sort(String sorting) {
+        repo.sort(sorting);
+    }
+
+    public int getLastPage(int maxResults) {
+        return repo.getLastPage(maxResults);
+    }
+
+    public int getMaxPrice() {
+        return repo.getMaxPrice();
+    }
+
+    public int getMaxQuantity() {
+        return repo.getMaxQuantity();
+    }
+
+    public void setNumberCriteria(int minPrice, int maxPrice, int minQuantity, int maxQuantity) {
+        repo.setNumberCriteria(minPrice,maxPrice,minQuantity,maxQuantity);
+    }
+    public void setCategories(String category) {
+        repo.setCategories(category);
+    }
 }
 
 

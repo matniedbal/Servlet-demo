@@ -50,12 +50,31 @@
     <table class="table">
         <tr>
             <form method="post" action="/search-products">
-                <label for="search-by">Search:</label>
-                <select id="search-by" class="form-control" name="search-by">
+                <label for="search-by-category">Category:</label>
+                <select id="search-by-category" name="search-by-category">
+                    <option>ALL CATEGORIES</option>
+                    <option>ELECTRONICS</option>
+                    <option>HEALTH</option>
+                    <option>HOME</option>
+                    <option>SPORT</option>
+                </select>
+                <label for="search-by">  Search:</label>
+                <select id="search-by" name="search-by">
                     <option>name</option>
                     <option>description</option>
                 </select>
-                <input type="text" name="search" id="search">
+                <br>
+                <label for="min-price">Min price:</label>
+                <input type="text" name="min-price" id="min-price" value=${minPrice}>
+                <label for="max-price">Max price:</label>
+                <input type="text" name="max-price" id="max-price" value=${maxPrice}>
+                <br>
+                <label for="min-quantity">Min quantity:</label>
+                <input type="text" name="min-quantity" id="min-quantity" value=${minQuantity}>
+                <label for="max-quantity">...Max quantity:</label>
+                <input type="text" name="max-quantity" id="max-quantity" value=${maxQuantity}>
+                <br>
+                <input type="text" name="search" class="form-control-lg" id="search">
                 <input type="submit" value="search" alt="search"/>
             </form>
         </tr>
@@ -145,9 +164,9 @@
             <td>
                 <form method="post" action="/get-page">
                     <label for="page-no">Page:</label>
-                    <input type="text" name="page" id="page-no" value="0">
+                    <input type="text" name="page" id="page-no" value=${currentAllProductsPage}>
                     <label for="max-per-page">Max results per page:</label>
-                    <input type="text" name="max-per-page" id="max-per-page" value="10">
+                    <input type="text" name="max-per-page" id="max-per-page" value=${recordsOnAllProductsPage}>
                     <input type="submit" value="ok" alt="next page"/>
                 </form>
             </td>

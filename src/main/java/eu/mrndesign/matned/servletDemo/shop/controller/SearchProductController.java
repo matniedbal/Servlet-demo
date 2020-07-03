@@ -18,9 +18,23 @@ public class SearchProductController extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String search = req.getParameter("search");
         String searchBy = req.getParameter("search-by");
-        System.out.println("Search item = "+ search+", search by: "+searchBy);
+        String category = req.getParameter("search-by-category");
+        String minPrice = req.getParameter("min-price");
+        String maxPrice = req.getParameter("max-price");
+        String minQuantity = req.getParameter("min-quantity");
+        String maxQuantity = req.getParameter("max-quantity");
 
         productService.search(search, searchBy);
+        try {
+            productService.setNumberCriteria(
+                    Integer.parseInt(minPrice),
+                    Integer.parseInt(maxPrice),
+                    Integer.parseInt(minQuantity),
+                    Integer.parseInt(maxQuantity));
+        }catch (NumberFormatException e){
+            //here comes an error message
+        }
+        productService.setCategories(category);
         resp.sendRedirect("/all-products");
     }
 }

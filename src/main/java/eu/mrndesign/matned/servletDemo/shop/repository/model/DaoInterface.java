@@ -9,4 +9,7 @@ public interface DaoInterface<A>{
     void add(A a);
     void update(A a);
     void remove(A a);
+    void sort(String sortBy);
+    int getNumberOfRecords();
+    int getMax(String column);
 }

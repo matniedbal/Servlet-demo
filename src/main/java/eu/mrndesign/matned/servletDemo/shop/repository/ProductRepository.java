@@ -5,7 +5,6 @@ import eu.mrndesign.matned.servletDemo.shop.repository.model.entity.Product;
 import lombok.Getter;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class ProductRepository {
 
@@ -20,41 +19,28 @@ public class ProductRepository {
 
     @Getter
     private List<Product> products;
-    private ProductDao dao;
-    private boolean justAddedNeItemFlag;
+    private final ProductDao dao;
 
     private ProductRepository() {
         products = new ArrayList<>();
-        justAddedNeItemFlag = false;
+        dao = new ProductDao();
     }
 
     public void save(Product product) {
-        if(dao == null) {
-            dao = new ProductDao();
-            justAddedNeItemFlag = true;
-        }
         product.setId(products.size() + 1);
         products.add(product);
         dao.add(product);
     }
 
     public List<Product> search(String item , String searchedBy){
-        dao = new ProductDao();
         dao.setSearch(item);
         dao.setSearchedBy(searchedBy);
         products = dao.findAll();
         return products;
     }
 
-    public List<Product> initiateListFromDB_Page(){
-        justAddedNeItemFlag = false;
-        dao = new ProductDao();
-        products = dao.findAll();
-        return products;
-    }
-
     public List<Product> findAll() {
-        if(justAddedNeItemFlag) return initiateListFromDB_Page();
+        products = dao.findAll();
         return products;
     }
 
@@ -70,55 +56,42 @@ public class ProductRepository {
                 .filter(p -> p.getId().equals(id))
                 .findAny();
         product.ifPresent(products::remove);
-        product.ifPresent(value -> dao.remove(value));
+        product.ifPresent(dao::remove);
     }
 
-    public void sortBy(String sortBy) {
-        switch (sortBy) {
-            case "id": {
-                sortStatement(Comparator.comparing(Product::getId));
-                break;
-            }
-            case "name": {
-                sortStatement(Comparator.comparing(Product::getName));
-                break;
-            }
-            case "category": {
-                sortStatement(Comparator.comparing(Product::getCategory));
-                break;
-            }
-            case "description": {
-                sortStatement(Comparator.comparing(Product::getDescription));
-                break;
-            }
-            case "price": {
-                sortStatement(Comparator.comparing(Product::getPrice));
-                break;
-            }
-            case "quantity": {
-                sortStatement(Comparator.comparing(Product::getQuantity));
-                break;
-            }
-            default: products.sort(Comparator.comparing(Product::getId));
-        }
+    public void sort(String sortBy) {
+        dao.sort(sortBy);
     }
 
     public void setProduct(Product productToEdit) {
         dao.update(productToEdit);
     }
 
-
-    private void sortStatement(Comparator<Product> comparing) {
-        if (!isSorted(products.stream().sorted(comparing).collect(Collectors.toList())))
-            products.sort(comparing);
-        else products.sort(comparing.reversed());
+    public void setPage(int page, int maxResults){
+        dao.setPage(page,maxResults);
     }
 
-    private boolean isSorted(List<Product> collect) {
-        for (int i = 0; i < products.size(); i++) {
-            if (!products.get(i).equals(collect.get(i))) return false;
-        }
-        return true;
+    public void clearProductList() {
+        products.clear();
+    }
+
+    public int getLastPage(int maxResults) {
+        int records = dao.getNumberOfRecords();
+        return records/maxResults;
+    }
+    public int getMaxPrice() {
+        return dao.getMax("price");
+    }
+
+    public int getMaxQuantity() {
+        return dao.getMax("quantity");
+    }
+
+    public void setNumberCriteria(int minPrice, int maxPrice, int minQuantity, int maxQuantity) {
+        dao.setNumberCriteria(minPrice,maxPrice,minQuantity,maxQuantity);
+    }
+    public void setCategories(String category) {
+        dao.setCategories(category);
     }
 
 }

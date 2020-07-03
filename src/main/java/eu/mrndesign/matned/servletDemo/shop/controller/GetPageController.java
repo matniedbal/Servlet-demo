@@ -10,23 +10,25 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebServlet(name = "LastPage", value = "/last-page")
-public class LastPage extends HttpServlet {
+@WebServlet(name = "GetPageController", value = "/get-page")
+public class GetPageController extends HttpServlet {
 
     private final ProductService productService = ProductService.getInstance();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
+            int changedPage = Integer.parseInt(req.getParameter("page"));
+            int maxResults = Integer.parseInt(req.getParameter("max-per-page"));
             HttpSession session = req.getSession();
-            int maxResults = (int) session.getAttribute("recordsOnAllProductsPage");
-            int lastPage = productService.getLastPage(maxResults);
-            session.setAttribute("currentAllProductsPage", lastPage);
-            productService.setPage(lastPage,maxResults);
+            session.setAttribute("currentAllProductsPage", changedPage);
+            session.setAttribute("recordsOnAllProductsPage", maxResults);
+            productService.setPage(changedPage,maxResults);
+            productService.findAll();
         }catch (NumberFormatException ignored){
         }finally {
+
             resp.sendRedirect("/all-products");
         }
     }
-
 }

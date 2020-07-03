@@ -2,6 +2,7 @@ package eu.mrndesign.matned.servletDemo.shop.controller;
 
 import eu.mrndesign.matned.servletDemo.shop.repository.model.entity.ShoppingCart;
 import eu.mrndesign.matned.servletDemo.shop.repository.model.entity.User;
+import eu.mrndesign.matned.servletDemo.shop.service.ProductService;
 import eu.mrndesign.matned.servletDemo.shop.service.UserService;
 
 import javax.servlet.ServletException;
@@ -17,6 +18,7 @@ import java.util.Optional;
 public class LoginController extends HttpServlet {
 
     private UserService service = UserService.getInstance();
+    private ProductService pService;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -41,9 +43,17 @@ public class LoginController extends HttpServlet {
             return;
         }
         User u = user.get();
+        pService = ProductService.getInstance();
         HttpSession session = req.getSession();
         session.setAttribute("user", u);
         session.setAttribute("shoppingCart", new ShoppingCart());
+        session.setAttribute("currentAllProductsPage", 0);
+        session.setAttribute("recordsOnAllProductsPage", 20);
+        session.setAttribute("sortByAtribute", "id");
+        session.setAttribute("minPrice", 0);
+        session.setAttribute("minQuantity", 1);
+        session.setAttribute("maxPrice", pService.getMaxPrice());
+        session.setAttribute("maxQuantity", pService.getMaxQuantity());
         resp.sendRedirect("/");
     }
 
