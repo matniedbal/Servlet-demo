@@ -58,7 +58,7 @@
                     <option>HOME</option>
                     <option>SPORT</option>
                 </select>
-                <label for="search-by">  Search:</label>
+                <label for="search-by"> Search:</label>
                 <select id="search-by" name="search-by">
                     <option>name</option>
                     <option>description</option>
@@ -104,7 +104,7 @@
                     <input type="submit" value="^" alt="sort by description"/>
                 </form>
             </th>
-            <th scope="col">Quantity
+            <th scope="col">Available quantity
                 <form method="post" action="/sort-products">
                     <input type="hidden" name="sorting" value="quantity">
                     <input type="submit" value="^" alt="sort by quantity"/>
@@ -134,10 +134,11 @@
                     </form>
                 </td>
                 <td>
-                    <form method="post" action="/delete-product">
+                    <form method="post" action="/delete-product" onsubmit="return confirm('Do you really want to delete the products?');">
                         <input type="hidden" name="id" value="${p.id}">
-                        <input type="submit" value="Delete"/>
-                    </form></td>
+                        <input type="submit" id="deleteProductForm" name="submit" value="Delete"/>
+                    </form>
+                </td>
                 <td>
                     <form method="post" action="/add-to-cart">
                         <input type="hidden" name="id" value="${p.id}">
@@ -152,7 +153,7 @@
             <td>
                 <form method="post" action="/first-page">
                     <input type="hidden" name="page" value="page">
-                    <input type="submit" value="|<" alt = "first page"/>
+                    <input type="submit" value="|<" alt="first page"/>
                 </form>
             </td>
             <td>

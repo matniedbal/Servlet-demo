@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(name = "UserController", value = "/users")
 public class UserController extends HttpServlet {
 
-  private UserService service = UserService.getInstance();
+  private final UserService service = UserService.getInstance();
 
 
   @Override

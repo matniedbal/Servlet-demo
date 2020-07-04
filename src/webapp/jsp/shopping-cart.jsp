@@ -3,7 +3,7 @@
 
 <html>
 <head>
-    <title>Add product</title>
+    <title>Shopping cart</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -59,13 +59,32 @@
         <tbody>
         <c:forEach items="${shoppingCart.productItems}" var="p">
             <tr>
+                <td>${p.id}</td>
                 <td>${p.product.name}</td>
                 <td>${p.product.price}</td>
                 <td>${p.quantity}</td>
+                <td>
+                    <form method="post" action="/delete-product-cart">
+                        <input type="hidden" name="id" value="${p.id}">
+                        <input type="submit" value="-"/>
+                    </form>
+                </td>
+                <td>
+                    <form method="post" action="/add-product-cart">
+                        <input type="hidden" name="id" value="${p.id}">
+                        <input type="submit" value="+"/>
+                    </form></td>
+                <td>
             </tr>
         </c:forEach>
-
         </tbody>
+        <tr>
+            <td>
+                <form method="post" action="/payment-page">
+                    <input type="submit" value="Finish order" alt = "Payment"/>
+                </form>
+            </td>
+        </tr>
     </table>
 
     <h2>TOTAL PRICE :  ${shoppingCart.totalPrice}</h2>

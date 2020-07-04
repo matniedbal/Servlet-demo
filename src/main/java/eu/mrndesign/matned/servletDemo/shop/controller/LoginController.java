@@ -17,8 +17,7 @@ import java.util.Optional;
 @WebServlet(name = "LoginController ", value = "/login")
 public class LoginController extends HttpServlet {
 
-    private UserService service = UserService.getInstance();
-    private ProductService pService;
+    private final UserService service = UserService.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -43,7 +42,7 @@ public class LoginController extends HttpServlet {
             return;
         }
         User u = user.get();
-        pService = ProductService.getInstance();
+        ProductService pService = ProductService.getInstance();
         HttpSession session = req.getSession();
         session.setAttribute("user", u);
         session.setAttribute("shoppingCart", new ShoppingCart());

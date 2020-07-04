@@ -144,6 +144,23 @@ public class ProductDao implements DaoInterface<Product> {
         return result;
     }
 
+    @Override
+    public int getAbsoluteQuantity(Product product) {
+        SessionFactory factory = HibernateUtil.getSessionFactory();
+        int result = 0;
+        try (Session session = factory.openSession()) {
+            CriteriaBuilder cb = session.getCriteriaBuilder();
+            CriteriaQuery<Product> cq = cb.createQuery(Product.class);
+            Root<Product> rootTable = cq.from(Product.class);
+            cq.select(rootTable)
+                    .where(cb.equal(rootTable.get("id"), product.getId()));
+            result = session.createQuery(cq).getSingleResult().getQuantity();
+        }catch (HibernateException e){
+            error("Couldn't get the product quantity");
+        }
+        return result;
+    }
+
     public void setPage(int page, int maxResults){
         this.firstResult = page * maxResults;
         this.maxResults = maxResults;

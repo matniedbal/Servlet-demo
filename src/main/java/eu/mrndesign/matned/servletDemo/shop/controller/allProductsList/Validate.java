@@ -1,4 +1,4 @@
-package eu.mrndesign.matned.servletDemo.shop.controller;
+package eu.mrndesign.matned.servletDemo.shop.controller.allProductsList;
 
 public class Validate {
 

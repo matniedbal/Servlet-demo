@@ -2,6 +2,7 @@ package eu.mrndesign.matned.servletDemo.shop.service;
 
 import eu.mrndesign.matned.servletDemo.shop.repository.model.entity.Product;
 import eu.mrndesign.matned.servletDemo.shop.repository.ProductRepository;
+import eu.mrndesign.matned.servletDemo.shop.repository.model.entity.ShoppingCart;
 
 import java.util.*;
 
@@ -52,11 +53,6 @@ public class ProductService {
         repo.setPage(page,maxResults);
     }
 
-
-    public void clearProductList() {
-        repo.clearProductList();
-    }
-
     public void sort(String sorting) {
         repo.sort(sorting);
     }
@@ -78,6 +74,14 @@ public class ProductService {
     }
     public void setCategories(String category) {
         repo.setCategories(category);
+    }
+
+    public void actualizeProductList_WithProductsInShoppingCart(ShoppingCart cart) {
+        repo.actualizeProductList_WithProductsInShoppingCart(cart);
+    }
+
+    public int getAbsoluteQuantity(Product product) {
+        return repo.getAbsoluteQuantity(product);
     }
 }
 

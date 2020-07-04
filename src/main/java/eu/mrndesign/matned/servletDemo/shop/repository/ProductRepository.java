@@ -2,6 +2,8 @@ package eu.mrndesign.matned.servletDemo.shop.repository;
 
 import eu.mrndesign.matned.servletDemo.shop.repository.model.ProductDao;
 import eu.mrndesign.matned.servletDemo.shop.repository.model.entity.Product;
+import eu.mrndesign.matned.servletDemo.shop.repository.model.entity.ProductItem;
+import eu.mrndesign.matned.servletDemo.shop.repository.model.entity.ShoppingCart;
 import lombok.Getter;
 
 import java.util.*;
@@ -18,7 +20,7 @@ public class ProductRepository {
     }
 
     @Getter
-    private List<Product> products;
+    private final List<Product> products;
     private final ProductDao dao;
 
     private ProductRepository() {
@@ -32,28 +34,28 @@ public class ProductRepository {
         dao.add(product);
     }
 
-    public List<Product> search(String item , String searchedBy){
+    public void search(String item , String searchedBy){
         dao.setSearch(item);
         dao.setSearchedBy(searchedBy);
-        products = dao.findAll();
-        return products;
+        findAll();
     }
 
     public List<Product> findAll() {
-        products = dao.findAll();
+        products.clear();
+        products.addAll(dao.findAll());
         return products;
     }
 
     public Product findById(int id) {
         Optional<Product> product = products.stream()
-                .filter(p -> p.getId().equals(id))
+                .filter(p -> p.getId() == id)
                 .findAny();
         return product.orElse(null);
     }
 
     public void deleteProd(Integer id) {
         Optional<Product> product = products.stream()
-                .filter(p -> p.getId().equals(id))
+                .filter(p -> p.getId() == id)
                 .findAny();
         product.ifPresent(products::remove);
         product.ifPresent(dao::remove);
@@ -94,4 +96,24 @@ public class ProductRepository {
         dao.setCategories(category);
     }
 
+    public void actualizeProductList_WithProductsInShoppingCart(ShoppingCart cart) {
+        for (Product el : products) {
+            for (ProductItem cartEl :
+                    cart.getProductItems()) {
+                if(el.getId() == cartEl.getProduct().getId())
+                {
+                    int actualQuantity = el.getQuantity() - cartEl.getQuantity();
+                    if(actualQuantity < 0) {
+                        cartEl.setQuantity(cartEl.getQuantity()+actualQuantity);
+                        actualizeProductList_WithProductsInShoppingCart(cart);
+                    }
+                    el.setQuantity(actualQuantity);
+                }
+            }
+        }
+    }
+
+    public int getAbsoluteQuantity(Product product) {
+        return dao.getAbsoluteQuantity(product);
+    }
 }

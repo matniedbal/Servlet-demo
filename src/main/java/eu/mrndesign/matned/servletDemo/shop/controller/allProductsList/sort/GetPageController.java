@@ -1,8 +1,7 @@
-package eu.mrndesign.matned.servletDemo.shop.controller;
+package eu.mrndesign.matned.servletDemo.shop.controller.allProductsList.sort;
 
 import eu.mrndesign.matned.servletDemo.shop.service.ProductService;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +15,7 @@ public class GetPageController extends HttpServlet {
     private final ProductService productService = ProductService.getInstance();
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
             int changedPage = Integer.parseInt(req.getParameter("page"));
             int maxResults = Integer.parseInt(req.getParameter("max-per-page"));

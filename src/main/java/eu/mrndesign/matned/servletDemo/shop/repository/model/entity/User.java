@@ -15,6 +15,9 @@ public class User {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id")
+  private int id;
+
   @Column(name = "user_name")
   private String name;
 
@@ -26,4 +29,10 @@ public class User {
 
   @Column(name = "password")
   private String password;
+
+  @Enumerated(value = EnumType.STRING)
+  @Column(name = "user_type")
+  private UserType userType;
+
+
 }
