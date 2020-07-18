@@ -1,6 +1,6 @@
 package eu.mrndesign.matned.servletDemo.shop.controller;
 
-import eu.mrndesign.matned.servletDemo.shop.repository.model.entity.ShoppingCart;
+import eu.mrndesign.matned.servletDemo.shop.repository.model.noDBModel.ShoppingCart;
 import eu.mrndesign.matned.servletDemo.shop.repository.model.entity.User;
 import eu.mrndesign.matned.servletDemo.shop.service.ProductService;
 import eu.mrndesign.matned.servletDemo.shop.service.UserService;

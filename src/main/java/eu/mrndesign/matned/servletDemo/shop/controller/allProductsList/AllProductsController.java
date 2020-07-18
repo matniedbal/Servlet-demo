@@ -1,7 +1,7 @@
 package eu.mrndesign.matned.servletDemo.shop.controller.allProductsList;
 
 import eu.mrndesign.matned.servletDemo.shop.repository.model.entity.Product;
-import eu.mrndesign.matned.servletDemo.shop.repository.model.entity.ShoppingCart;
+import eu.mrndesign.matned.servletDemo.shop.repository.model.noDBModel.ShoppingCart;
 import eu.mrndesign.matned.servletDemo.shop.service.ProductService;
 
 import javax.servlet.ServletException;

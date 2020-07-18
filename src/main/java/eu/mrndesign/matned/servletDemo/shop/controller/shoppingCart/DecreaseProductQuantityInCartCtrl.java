@@ -1,6 +1,6 @@
 package eu.mrndesign.matned.servletDemo.shop.controller.shoppingCart;
 
-import eu.mrndesign.matned.servletDemo.shop.repository.model.entity.ShoppingCart;
+import eu.mrndesign.matned.servletDemo.shop.repository.model.noDBModel.ShoppingCart;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;

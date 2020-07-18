@@ -1,4 +1,4 @@
-package eu.mrndesign.matned.servletDemo.shop.repository.model.entity;
+package eu.mrndesign.matned.servletDemo.shop.repository.model.enumRepo;
 
 public enum Category {
 

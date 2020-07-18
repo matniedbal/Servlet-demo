@@ -1,7 +1,7 @@
 package eu.mrndesign.matned.servletDemo.shop.repository.model;
 
 import eu.mrndesign.matned.servletDemo.shop.repository.hibernate.HibernateUtil;
-import eu.mrndesign.matned.servletDemo.shop.repository.model.entity.Category;
+import eu.mrndesign.matned.servletDemo.shop.repository.model.enumRepo.Category;
 import eu.mrndesign.matned.servletDemo.shop.repository.model.entity.Product;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -176,10 +176,8 @@ public class ProductDao implements DaoInterface<Product> {
 
     public void setCategories(String category) {
         try {
-            if (categories.contains(Category.valueOf(category))) {
-                categories = new ArrayList<>();
-                categories.add(Category.valueOf(category));
-            }
+            categories.clear();
+            categories.add(Category.valueOf(category));
         }catch (IllegalArgumentException e){
             categories = Arrays.asList(Category.values());
         }

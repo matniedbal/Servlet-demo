@@ -23,7 +23,6 @@ public class SearchProductController extends HttpServlet {
         String minQuantity = req.getParameter("min-quantity");
         String maxQuantity = req.getParameter("max-quantity");
 
-        productService.search(search, searchBy);
         try {
             productService.setNumberCriteria(
                     Integer.parseInt(minPrice),
@@ -31,9 +30,10 @@ public class SearchProductController extends HttpServlet {
                     Integer.parseInt(minQuantity),
                     Integer.parseInt(maxQuantity));
         }catch (NumberFormatException e){
-            //here comes an error message
+            //here comes an error code
         }
         productService.setCategories(category);
+        productService.search(search, searchBy);
         resp.sendRedirect("/all-products");
     }
 }

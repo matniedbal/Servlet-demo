@@ -1,10 +1,12 @@
-package eu.mrndesign.matned.servletDemo.shop.repository.model.entity;
+package eu.mrndesign.matned.servletDemo.shop.repository.model.noDBModel;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
+import eu.mrndesign.matned.servletDemo.shop.repository.model.entity.Product;
+import eu.mrndesign.matned.servletDemo.shop.repository.model.entity.ProductItem;
 import lombok.Getter;
 
 @Getter

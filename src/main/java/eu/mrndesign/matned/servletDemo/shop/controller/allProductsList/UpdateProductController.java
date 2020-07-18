@@ -1,6 +1,6 @@
 package eu.mrndesign.matned.servletDemo.shop.controller.allProductsList;
 
-import eu.mrndesign.matned.servletDemo.shop.repository.model.entity.Category;
+import eu.mrndesign.matned.servletDemo.shop.repository.model.enumRepo.Category;
 import eu.mrndesign.matned.servletDemo.shop.repository.model.entity.Product;
 import eu.mrndesign.matned.servletDemo.shop.service.ProductService;
 

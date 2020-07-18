@@ -2,7 +2,7 @@ package eu.mrndesign.matned.servletDemo.shop.service;
 
 import eu.mrndesign.matned.servletDemo.shop.repository.model.entity.Product;
 import eu.mrndesign.matned.servletDemo.shop.repository.ProductRepository;
-import eu.mrndesign.matned.servletDemo.shop.repository.model.entity.ShoppingCart;
+import eu.mrndesign.matned.servletDemo.shop.repository.model.noDBModel.ShoppingCart;
 
 import java.util.*;
 

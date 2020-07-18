@@ -3,7 +3,7 @@ package eu.mrndesign.matned.servletDemo.shop.repository;
 import eu.mrndesign.matned.servletDemo.shop.repository.model.ProductDao;
 import eu.mrndesign.matned.servletDemo.shop.repository.model.entity.Product;
 import eu.mrndesign.matned.servletDemo.shop.repository.model.entity.ProductItem;
-import eu.mrndesign.matned.servletDemo.shop.repository.model.entity.ShoppingCart;
+import eu.mrndesign.matned.servletDemo.shop.repository.model.noDBModel.ShoppingCart;
 import lombok.Getter;
 
 import java.util.*;
@@ -37,7 +37,6 @@ public class ProductRepository {
     public void search(String item , String searchedBy){
         dao.setSearch(item);
         dao.setSearchedBy(searchedBy);
-        findAll();
     }
 
     public List<Product> findAll() {
@@ -71,10 +70,6 @@ public class ProductRepository {
 
     public void setPage(int page, int maxResults){
         dao.setPage(page,maxResults);
-    }
-
-    public void clearProductList() {
-        products.clear();
     }
 
     public int getLastPage(int maxResults) {

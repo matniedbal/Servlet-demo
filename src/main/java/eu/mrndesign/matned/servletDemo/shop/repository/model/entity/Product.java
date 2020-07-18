@@ -1,5 +1,6 @@
 package eu.mrndesign.matned.servletDemo.shop.repository.model.entity;
 
+import eu.mrndesign.matned.servletDemo.shop.repository.model.enumRepo.Category;
 import lombok.*;
 
 import javax.persistence.*;
